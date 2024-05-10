@@ -1,4 +1,4 @@
 package com.ms.auth.dto;
 
-public record RegisterRequestDTO(String username, String email, String password) {
+public record RegisterRequestDTO(String name,String email, String username, String password) {
 }

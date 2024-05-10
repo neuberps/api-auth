@@ -1,4 +1,6 @@
 package com.ms.auth.dto;
 
-public record ResponseDTO (String username, String token) {
+import com.ms.auth.model.User;
+
+public record ResponseDTO (UserDTO user, String token) {
 }
