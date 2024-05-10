@@ -2,6 +2,7 @@ package com.ms.auth.infra.security;
 
 import com.ms.auth.model.User;
 import com.ms.auth.repository.UserRepository;
+import com.ms.auth.util.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if(login != null){
             User user = userRepository.findByEmail(login).orElseThrow(() -> new RuntimeException("User Not Found"));
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            var authorities = Collections.singletonList(new SimpleGrantedAuthority(Constants.ROLE_USER));
+            if(Constants.ROLE_ADMIN.matches(user.getRole())){
+                authorities = Collections.singletonList(new SimpleGrantedAuthority(Constants.ROLE_ADMIN));
+            }
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

@@ -1,12 +1,10 @@
 package com.ms.auth.controllers;
 
-import com.ms.auth.dto.LoginRequestDTO;
-import com.ms.auth.dto.RegisterRequestDTO;
-import com.ms.auth.dto.ResponseDTO;
-import com.ms.auth.dto.UserDTO;
+import com.ms.auth.dto.*;
 import com.ms.auth.infra.security.TokenService;
 import com.ms.auth.model.User;
 import com.ms.auth.repository.UserRepository;
+import com.ms.auth.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +35,16 @@ public class AuthController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PostMapping("/loginAdmin")
+    public ResponseEntity loginAdmin(@RequestBody LoginRequestDTO body) {
+        User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
+        if(passwordEncoder.matches(body.password(), user.getPassword()) && Constants.ROLE_ADMIN.equals(user.getRole())) {
+            String token = this.tokenService.generateToken(user);
+            UserDTO userDTO = new UserDTO(user);
+            return ResponseEntity.ok(new ResponseDTO(userDTO, token));
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequestDTO body){
