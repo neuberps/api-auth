@@ -198,7 +198,8 @@
   "email": "neuber@gmail.com",
   "username": "neuber",
   "password": "$2a$10$j6YPnDYCNFbwwT4Lyqaqfe4p45EWpLhoU6Exv6iI.jx7USMKf08dK",
-  "_class": "com.ms.auth.model.User"
+  "_class": "com.ms.auth.model.User",
+  "role": "ADMIN"
 },
 {
   "_id": {
