@@ -21,7 +21,7 @@ public class User implements Serializable {
     private String email;
     private String username;
     private String password;
-
+    private String role;
     public User (UserDTO userDTO){
         BeanUtils.copyProperties(userDTO, this);
     }
