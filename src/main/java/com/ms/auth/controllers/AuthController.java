@@ -1,7 +1,6 @@
 package com.ms.auth.controllers;
 
 import com.ms.auth.dto.*;
-import com.ms.auth.infra.security.TokenService;
 import com.ms.auth.model.User;
 import com.ms.auth.repository.UserRepository;
 import com.ms.auth.util.Constants;
@@ -20,7 +19,7 @@ public class AuthController {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+
 
 
     @PostMapping("/login")
@@ -28,9 +27,8 @@ public class AuthController {
        User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
 
         if(passwordEncoder.matches(body.password(), user.getPassword())) {
-            String token = this.tokenService.generateToken(user);
             UserDTO userDTO = new UserDTO(user);
-            return ResponseEntity.ok(new ResponseDTO(userDTO, token));
+            return ResponseEntity.ok(new ResponseDTO(userDTO));
         }
         return ResponseEntity.badRequest().build();
     }
@@ -39,9 +37,8 @@ public class AuthController {
     public ResponseEntity loginAdmin(@RequestBody LoginRequestDTO body) {
         User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
         if(passwordEncoder.matches(body.password(), user.getPassword()) && Constants.ROLE_ADMIN.equals(user.getRole())) {
-            String token = this.tokenService.generateToken(user);
             UserDTO userDTO = new UserDTO(user);
-            return ResponseEntity.ok(new ResponseDTO(userDTO, token));
+            return ResponseEntity.ok(new ResponseDTO(userDTO));
         }
         return ResponseEntity.badRequest().build();
     }
@@ -58,8 +55,8 @@ public class AuthController {
             newUser.setUsername(body.username());
             this.repository.save(newUser);
 
-            String token = this.tokenService.generateToken(newUser);
-            return ResponseEntity.ok(new ResponseDTO(new UserDTO(newUser),token));
+
+            return ResponseEntity.ok(new ResponseDTO(new UserDTO(newUser)));
         } else {
         return ResponseEntity.badRequest().body("Email já cadastrado.");
     }
